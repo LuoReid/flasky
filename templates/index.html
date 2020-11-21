@@ -1,4 +1,13 @@
+{% extends "base.html" %}
+{% block title %} Flasky - Home {% endblock%}
+{%block page_content%}
+<div class="page-header">
+  <h1>Hello:)</h1>
+
+</div>
+
 <p>A value from a head:{{h.Host}}</p>
 <p>header.User-Agent:{{h['User-Agent']}}</p>
 <p>header.Connection:{{h.Connection}}</p>
 <p>Accept-Encoding:{{h['Accept-Encoding']|title}}</p>
+{%endblock%}
