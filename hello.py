@@ -1,7 +1,9 @@
 from flask import Flask,request,g,make_response,render_template
 from flask_script import Manager
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 manager = Manager(app)
 
 @app.route('/')
@@ -16,7 +18,8 @@ def index():
 
 @app.route('/user/<name>')
 def user(name):
-  return '<h2>hello, %s !</h2>' % name
+  # return '<h2>hello, %s !</h2>' % name
+  return render_template('user.html',name=name)
 
 if __name__ == '__main__':
   manager.run()
