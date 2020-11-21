@@ -1,4 +1,4 @@
-from flask import Flask,request,g,make_response
+from flask import Flask,request,g,make_response,render_template
 from flask_script import Manager
 
 app = Flask(__name__)
@@ -9,9 +9,10 @@ def index():
   ug = request.headers.get('User-Agent')
   print('request headers:',request.headers)
   print('g:',g)
-  res = make_response( '<h1>Hello Python:)</h1><h2>%s</h2>' % ug,400)
-  res.set_cookie('answer','43')
-  return res
+  # res = make_response( '<h1>Hello Python:)</h1><h2>%s</h2>' % ug,400)
+  # res.set_cookie('answer','43')
+  h = request.headers
+  return render_template('index.html',h=h)
 
 @app.route('/user/<name>')
 def user(name):
