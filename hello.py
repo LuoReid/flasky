@@ -1,9 +1,15 @@
-from flask import Flask
+from flask import Flask,request,g,make_response
+
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-  return '<h1>Hello Python:)</h1>'
+  ug = request.headers.get('User-Agent')
+  print('request headers:',request.headers)
+  print('g:',g)
+  res = make_response( '<h1>Hello Python:)</h1><h2>%s</h2>' % ug,400)
+  res.set_cookie('answer','43')
+  return res
 
 @app.route('/user/<name>')
 def user(name):
