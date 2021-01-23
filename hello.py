@@ -1,4 +1,4 @@
-from flask import Flask,request,g,make_response,render_template,session,redirect,url_for
+from flask import Flask,request,g,make_response,render_template,session,redirect,url_for,flash
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
@@ -36,10 +36,12 @@ def index():
   name = None
   form = NameForm()
   if form.validate_on_submit():
+    old_name = session.get('name')
     name = form.name.data
-    session['name'] = form.name.data
+    if old_name is not None and old_name != name:
+      flash('Looks like you have changed your name!')
+    session['name'] = name
     return redirect(url_for('index'))
-    form.name.data = ''
   return render_template('index.html',form=form,name=session.get('name'))
 
 @app.route('/user/<name>')

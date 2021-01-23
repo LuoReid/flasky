@@ -1,9 +1,9 @@
 {% extends "bootstrap/base.html" %}
 
 {%block head%}
-  {{super()}}
-  <link rel="shortcut icon" type="image/x-icon" href="{{url_for('static',filename='favicon.ico')}}">
-  <link rel="icon" type="image/x-icon" href="{{url_for('static',filename='favicon.ico')}}">
+{{super()}}
+<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static',filename='favicon.ico')}}">
+<link rel="icon" type="image/x-icon" href="{{url_for('static',filename='favicon.ico')}}">
 {%endblock%}
 
 {% block title %} Flasky {% endblock%}
@@ -30,7 +30,13 @@
 
 {%block content%}
 <div class="container">
-{%block page_content%}{%endblock%}
+  {% for msg in get_flashed_messages() %}
+  <div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{msg}}
+  </div>
+  {%endfor%}
+  {%block page_content%}{%endblock%}
 </div>
 {%endblock%}
 
