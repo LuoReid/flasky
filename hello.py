@@ -7,6 +7,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required, DataRequired
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate, MigrateCommand
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -21,6 +22,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 db = SQLAlchemy(app)
 
+migrate = Migrate(app, db)
+manager.add_command('db', MigrateCommand)
+
 
 class NameForm(FlaskForm):
     name = StringField('What is your name? ', validators=[DataRequired()])
@@ -31,7 +35,7 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    users = db.relationship('User', backref='role',lazy='dynamic')
+    users = db.relationship('User', backref='role', lazy='dynamic')
 
     def __repr__(self):
         return '<Role %r>' % self.name
@@ -82,7 +86,7 @@ def index():
         session['name'] = name
         form.name.data = ''
         return redirect(url_for('index'))
-    return render_template('index.html', form=form, name=session.get('name'),known=session.get('known',False))
+    return render_template('index.html', form=form, name=session.get('name'), known=session.get('known', False))
 
 
 @app.route('/user/<name>')
