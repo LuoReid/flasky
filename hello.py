@@ -9,6 +9,7 @@ from wtforms.validators import Required, DataRequired
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
 import os
+from flask_mail import Mail,Message
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -24,6 +25,24 @@ db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
+
+mail = Mail(app)
+
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['FLASKY_ADMIN'] = os.environ.get('FLASKY_ADMIN')
+app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
+app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <luo.reid@gmail.com>'
+
+def send_email(to,subject,template,**kw):
+    msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX']+subject,
+    sender=app.config['FLASKY_MAIL_SENDER'],recipients=[to])
+    msg.body = render_template(template+'.txt',**kw)
+    msg.html = render_template(template+'.html',**kw)
+    mail.send(msg)
 
 
 class NameForm(FlaskForm):
@@ -78,6 +97,8 @@ def index():
             user = User(username=name)
             db.session.add(user)
             session['known'] = False
+            if app.config['FLASKY_ADMIN']:
+                send_email(app.config['FLASKY_ADMIN'],'New user','mail/new_user',user=user)
         else:
             session['known'] = True
         old_name = session.get('name')
