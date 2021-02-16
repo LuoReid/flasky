@@ -52,6 +52,7 @@ def send_email(to,subject,template,**kw):
     return thr
 
 
+
 class NameForm(FlaskForm):
     name = StringField('What is your name? ', validators=[DataRequired()])
     submit = SubmitField('Submit')
