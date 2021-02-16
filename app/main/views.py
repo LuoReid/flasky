@@ -1,10 +1,11 @@
 from datetime import datetime
-from flask import render_template, session, redirect, url_for, flash
+from flask import render_template, session, redirect, url_for, flash, current_app
 
 from . import main
 from .forms import NameForm
 from .. import db
 from ..models import User
+from ..email import send_email
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -17,6 +18,9 @@ def index():
             user = User(username=name)
             db.session.add(user)
             session['known'] = False
+            if current_app.config['FLASKY_ADMIN']:
+                send_email(current_app.config['FLASKY_ADMIN'],
+                           'New User','mail/new_user', user=user)
             # if app.config['FLASKY_ADMIN']:
             #     send_email(app.config['FLASKY_ADMIN'],
             #                 'New user', 'mail/new_user', user=user)
