@@ -1,1 +1,7 @@
 venv/
+__pycache__
+app/__pycache__
+app/auth/__pycache__
+app/main/__pycache__
+app/migrations/__pycache__
+app/tests/__pycache__
