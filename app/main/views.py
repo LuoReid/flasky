@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template, session, redirect, url_for, flash, current_app
+from flask import render_template, session, redirect, url_for, flash, current_app, abort
 
 from . import main
 from .forms import NameForm
@@ -20,7 +20,7 @@ def index():
             session['known'] = False
             if current_app.config['FLASKY_ADMIN']:
                 send_email(current_app.config['FLASKY_ADMIN'],
-                           'New User','mail/new_user', user=user)
+                           'New User', 'mail/new_user', user=user)
             # if app.config['FLASKY_ADMIN']:
             #     send_email(app.config['FLASKY_ADMIN'],
             #                 'New user', 'mail/new_user', user=user)
@@ -36,3 +36,11 @@ def index():
                            form=form, name=session.get('name'),
                            known=session.get('known', False),
                            current_time=datetime.utcnow())
+
+
+@main.route('/user/<username>')
+def user(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        abort(404)
+    return render_template('user.html', user=user)
