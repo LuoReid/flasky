@@ -33,8 +33,8 @@ class ProductionConfig(Config):
     'sqlite:///{}'.format(os.path.join(basedir,'data.sqlite'))
 
 config = {
-  'dev':DevelopmentConfig,
-  'test':TestingConfig,
-  'prod':ProductionConfig,
+  'development':DevelopmentConfig,
+  'testing':TestingConfig,
+  'production':ProductionConfig,
   'default':DevelopmentConfig
 }
